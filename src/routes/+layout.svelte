@@ -1,5 +1,6 @@
 <script context="module">
   import Modal from "../components/Modal.svelte";
+  import Slider from "../components/Slider.svelte";
 </script>
 
 <script>
@@ -7,17 +8,24 @@
   import Footer from "../lib/Footer.svelte";
   import { onMount } from "svelte";
 
-  let modalContent = {};
   let showModalState = false;
+  let modalContent = {};
 
   function showModal(content) {
-    modalContent = content;
     showModalState = true;
+    modalContent = content;
   }
 
   onMount(() => {
     // Llama a la función showModal con el objeto JSON como parámetro
-    showModal({ message: "Seisi" });
+    showModal({
+      modalConfig: {
+        userClose: false,
+      },
+      modalCont: {
+        component: Slider,
+      },
+    });
   });
 </script>
 

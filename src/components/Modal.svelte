@@ -2,9 +2,15 @@
 
 <script>
   export let showModalState;
-  export let configModal;
   export let modalContent;
 
+  // Configuracion para el modal
+  let { userClose } = modalContent.modalConfig;
+
+  // Componente de entrada
+  let { component } = modalContent.modalCont;
+
+  // Metodo para el cierre del modal
   function closeModal() {
     showModalState = false;
   }
@@ -130,7 +136,11 @@
         ></svg
       >
     </span>
-    <button class="btn-close" on:click={closeModal}>
+    <button
+      class="btn-close"
+      style="display: {userClose ? 'flex' : 'none'};"
+      on:click={closeModal}
+    >
       <svg
         width="16"
         height="16"
@@ -146,7 +156,10 @@
       </svg>
     </button>
   </header>
-  <p>{modalContent.message}</p>
+
+  <!-- Cuerpo del contenido del modal -->
+  {modalContent.message}
+  <svelte:component this={component} />
 </div>
 
 <!-- Capa de no visualizacion de contenido -->
@@ -154,8 +167,8 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   class="modal-backg-cont"
-  style={showModalState ? "display: block;" : "display: none;"}
-  on:click={closeModal}
+  style="display: {showModalState ? 'block' : 'none'};"
+  on:click={userClose ? closeModal : null}
 />
 
 <style>
@@ -179,10 +192,12 @@
     bottom: 0;
     margin: auto;
     width: 100%;
-    max-width: 40rem;
-    height: 20rem;
+    max-width: 45rem;
+    height: max-content;
+    min-height: 4.5rem;
     background-color: hsl(212, 24%, 8%);
     border-radius: 1.5rem 1.5rem 0 0;
+    padding: 2rem 0 0 0;
     overflow: hidden;
     z-index: 11;
   }
@@ -219,11 +234,10 @@
     height: 2.5rem;
     background-color: rgba(255, 255, 255, 0.078);
     border-radius: 20px;
-
-    --cl-hover: #8397AF;
+    --cl-hover: #8397af;
   }
   .btn-close:hover {
-    --cl-hover: #C1CBD7;
+    --cl-hover: #c1cbd7;
   }
   .btn-close svg {
     height: 1rem;
