@@ -158,8 +158,10 @@
   </header>
 
   <!-- Cuerpo del contenido del modal -->
-  {modalContent.message}
-  <svelte:component this={component} />
+  <!-- {modalContent.message} -->
+  <main class="modal-main-cont">
+    <svelte:component this={component} />
+  </main>
 </div>
 
 <!-- Capa de no visualizacion de contenido -->
@@ -245,5 +247,10 @@
   }
   .btn-close svg path {
     fill: var(--cl-hover);
+  }
+
+  /* Contenedor principal del componente entrante */
+  .modal-main-cont {
+    
   }
 </style>

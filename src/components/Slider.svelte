@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
   let currentStep = 1;
   const totalSteps = 3; // Puedes ajustar según la cantidad de pasos que necesites
 
@@ -17,14 +17,13 @@
 
 <style>
   .container {
-    border: 1px solid red;
     text-align: center;
     overflow: hidden;
   }
 
   .steps-container {
     display: flex;
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.25s ease;
   }
 
   .step-content {
@@ -79,6 +78,7 @@
     {#each Array(totalSteps) as _, index}
       <div class={`step-content ${currentStep === index + 1 ? 'step' + (index + 1) : ''}`} style={`opacity: ${currentStep === index + 1 ? 1 : 0}`}>
         <p>Contenido del paso {index + 1}</p>
+        <p>Sexy</p>
       </div>
     {/each}
   </div>
@@ -93,12 +93,145 @@
     <button on:click={prevStep} disabled={currentStep === 1}>Anterior</button>
     <button on:click={nextStep} disabled={currentStep === totalSteps}>Siguiente</button>
   </div>
+</div> -->
+
+
+
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 3;
+
+  let username = '';
+  let email = '';
+  let acceptTerms = false;
+
+  const nextStep = () => {
+    if (currentStep < totalSteps) {
+      if (currentStep === 3 && validateFields()) {
+        // Realiza acciones adicionales si es necesario al pasar al siguiente paso desde el Paso 3
+      }
+      currentStep += 1;
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      currentStep -= 1;
+    }
+  };
+
+  const validateFields = () => {
+    // Lógica de validación de campos
+    return username.trim() !== '' && email.trim() !== '';
+  };
+</script>
+
+<style>
+  .container {
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .steps-container {
+    display: flex;
+    transition: transform 0.25s ease;
+  }
+
+  .step-content {
+    flex: 0 0 100%;
+    width: 20rem;
+    height: 30rem;
+    border-radius: 8px;
+    display: inline-block;
+    padding: 20px;
+    margin-top: 10px;
+    transition: opacity 0.5s ease-in-out;
+  }
+
+  .step1 { background-color: #777777; }
+  .step2 { background-color: #777777; }
+  .step3 { background-color: #777777; }
+
+  .circle-group {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .circle {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: gray;
+    display: inline-block;
+  }
+
+  .active {
+    background-color: black;
+  }
+
+  .navigation-buttons {
+    margin-top: 10px;
+  }
+
+  button {
+    color: black;
+    background-color: #ebebeb;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+
+  button[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+
+<div class="container">
+  <div class="steps-container" style={`transform: translateX(-${(currentStep - 1) * 100}%)`}>
+    <div class={`step-content ${currentStep === 1 ? 'step1' : ''}`} style={`opacity: ${currentStep === 1 ? 1 : 0}`}>
+      <h2>Paso 1</h2>
+      <p>Texto del paso 1</p>
+    </div>
+    <div class={`step-content ${currentStep === 2 ? 'step2' : ''}`} style={`opacity: ${currentStep === 2 ? 1 : 0}`}>
+      <h2>Paso 2</h2>
+      <p>Texto del paso 2</p>
+    </div>
+    <div class={`step-content ${currentStep === 3 ? 'step3' : ''}`} style={`opacity: ${currentStep === 3 ? 1 : 0}`}>
+      <h2>Paso 3</h2>
+      <label for="username">Nombre de Usuario:</label>
+      <input bind:value={username} type="text" required />
+
+      <label for="email">Correo Electrónico:</label>
+      <input bind:value={email} type="email" required />
+
+      <label>
+        <input bind:checked={acceptTerms} type="checkbox" />
+        <span>Acepto términos de uso</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="circle-group">
+    {#each Array(totalSteps) as _, index}
+      <div class={`circle ${currentStep === index + 1 ? 'active' : ''}`}></div>
+    {/each}
+  </div>
+
+  <div class="navigation-buttons">
+    <button on:click={prevStep} disabled={currentStep === 1}>Anterior</button>
+    <button on:click={nextStep} disabled={currentStep === totalSteps}>
+      {#if currentStep === 3}
+        Aceptar
+      {:else}
+        Siguiente
+      {/if}
+    </button>
+  </div>
 </div>
-
-
-
-
-
 
 
 
