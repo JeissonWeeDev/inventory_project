@@ -102,14 +102,18 @@
   let currentStep = 1;
   const totalSteps = 3;
 
-  let username = '';
-  let email = '';
-  let acceptTerms = false;
+  let formData = {
+    username: '',
+    email: '',
+    acceptTerms: false,
+  };
+
+  let acceptButtonEnabled = formData.username.trim() !== '' && formData.email.trim() !== '';
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
-      if (currentStep === 3 && validateFields()) {
-        // Realiza acciones adicionales si es necesario al pasar al siguiente paso desde el Paso 3
+      if (currentStep === 3 && !acceptButtonEnabled) {
+        return;
       }
       currentStep += 1;
     }
@@ -121,9 +125,9 @@
     }
   };
 
-  const validateFields = () => {
-    // Lógica de validación de campos
-    return username.trim() !== '' && email.trim() !== '';
+  const handleInputChange = (event) => {
+    formData = { ...formData, [event.target.id]: event.target.type === 'checkbox' ? event.target.checked : event.target.value };
+    acceptButtonEnabled = formData.username.trim() !== '' && formData.email.trim() !== '';
   };
 </script>
 
@@ -174,7 +178,7 @@
     margin-top: 10px;
   }
 
-  button {
+  .btn-normal {
     color: black;
     background-color: #ebebeb;
     padding: 8px 16px;
@@ -184,9 +188,20 @@
     cursor: pointer;
   }
 
-  button[disabled] {
+  .btn-accept {
+    color: black;
+    background-color: white; /* Cambia el color según tu preferencia */
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+
+  .btn-accept-des {
     opacity: 0.5;
     cursor: not-allowed;
+    /* Puedes agregar más estilos aquí para indicar que el botón está desactivado */
   }
 </style>
 
@@ -203,15 +218,19 @@
     <div class={`step-content ${currentStep === 3 ? 'step3' : ''}`} style={`opacity: ${currentStep === 3 ? 1 : 0}`}>
       <h2>Paso 3</h2>
       <label for="username">Nombre de Usuario:</label>
-      <input bind:value={username} type="text" required />
+      <input bind:value={formData.username} type="text" id="username" required on:input={handleInputChange} />
 
       <label for="email">Correo Electrónico:</label>
-      <input bind:value={email} type="email" required />
+      <input bind:value={formData.email} type="email" id="email" required on:input={handleInputChange} />
 
       <label>
-        <input bind:checked={acceptTerms} type="checkbox" />
+        <input bind:checked={formData.acceptTerms} type="checkbox" on:change={handleInputChange} />
         <span>Acepto términos de uso</span>
       </label>
+
+      {#if currentStep === 1}
+        <!-- Contenido específico del Paso 1, puedes agregar más elementos aquí si es necesario -->
+      {/if}
     </div>
   </div>
 
@@ -222,14 +241,16 @@
   </div>
 
   <div class="navigation-buttons">
-    <button on:click={prevStep} disabled={currentStep === 1}>Anterior</button>
-    <button on:click={nextStep} disabled={currentStep === totalSteps}>
-      {#if currentStep === 3}
+    {#if currentStep > 1}
+      <button on:click={prevStep} class="btn-normal">Anterior</button>
+    {/if}
+    {#if currentStep < 3}
+      <button on:click={nextStep} disabled={currentStep === totalSteps} class="btn-normal">Siguiente</button>
+    {:else}
+      <button on:click={nextStep} disabled={!acceptButtonEnabled} class:btn-accept-des={!acceptButtonEnabled} class:btn-accept={acceptButtonEnabled}>
         Aceptar
-      {:else}
-        Siguiente
-      {/if}
-    </button>
+      </button>
+    {/if}
   </div>
 </div>
 
