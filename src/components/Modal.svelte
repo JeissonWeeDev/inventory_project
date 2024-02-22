@@ -216,6 +216,7 @@
     padding: 1rem 1rem 0 1rem;
     width: inherit;
     height: max-content;
+    z-index: 12;
   }
 
   .lg-icon {
@@ -234,7 +235,7 @@
     align-items: center;
     width: 2.5rem;
     height: 2.5rem;
-    background-color: rgba(255, 255, 255, 0.078);
+    background-color: #23262B;
     border-radius: 20px;
     --cl-hover: #8397af;
   }
@@ -247,10 +248,5 @@
   }
   .btn-close svg path {
     fill: var(--cl-hover);
-  }
-
-  /* Contenedor principal del componente entrante */
-  .modal-main-cont {
-    
   }
 </style>
