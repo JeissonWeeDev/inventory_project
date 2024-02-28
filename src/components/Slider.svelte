@@ -9,7 +9,7 @@
   /* Variables para la referencia de altura, esto es para que cada paso tenga la altura del contendio automaticamente (Es un problema de diseño) */
   let stepRef1, stepRef2, stepRef3;
 
-  let acceptButtonEnabled;
+  let acceptButtonEnabled = true;
 
   let formData = {
     username: "",
@@ -204,14 +204,16 @@
       >
     </div>
     <div
-      class={`step-content ${currentStep === 3 ? "step3" : ""}`}
+      class={`step-content step3`}
       bind:this={stepRef3}
       style={`opacity: ${currentStep === 3 ? 1 : 0}`}
     >
       <form class="form-main" action="" method="post">
         <h2>¡Registrate para comenzar!</h2>
 
-        <label class="form-label-inp" for="username">Nombre de Usuario: <span>*</span></label>
+        <label class="form-label-inp" for="username"
+          >Nombre de Usuario: <span>*</span></label
+        >
         <input
           class="form-inp"
           bind:value={formData.username}
@@ -222,7 +224,9 @@
           placeholder="Escribe tu nombre"
         />
 
-        <label class="form-label-inp" for="email">Correo Electrónico: <span>*</span></label>
+        <label class="form-label-inp" for="email"
+          >Correo Electrónico: <span>*</span></label
+        >
         <input
           class="form-inp"
           bind:value={formData.email}
@@ -233,14 +237,23 @@
           placeholder="Escribe tu correo electronico"
         />
         <div class="ry-div" />
-        <label class="check-cont">
-          <input
-            bind:checked={formData.acceptTerms}
-            type="checkbox"
-            on:change={handleInputChange}
-          />
-          <span>Acepto términos de uso</span>
-        </label>
+
+        <div class="check-cont">
+          <div>
+            <input
+              class="check-input"
+              type="checkbox"
+              id="switch"
+              bind:checked={formData.acceptTerms}
+              on:change={handleInputChange}
+            />
+            <label class="check-label" for="switch">T</label>
+          </div>
+          <p class="check-txt">
+            <span>Activar contribución automatica</span> (Para la recoleccion de
+            errores)
+          </p>
+        </div>
       </form>
     </div>
   </div>
@@ -291,7 +304,7 @@
     width: 100%;
     height: max-content;
     padding: 0 0.5rem;
-    transition: opacity 0.5s ease-in-out;
+    transition: opacity 0.2s ease;
     z-index: 11;
   }
 
@@ -382,7 +395,6 @@
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    max-width: 243px;
     font-size: 2rem;
     font-weight: 600;
     margin-bottom: 1rem;
@@ -391,16 +403,17 @@
     font-size: 14px;
     font-weight: 500;
     color: rgba(245, 245, 245, 0.8);
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
   }
   .form-label-inp span {
-    color: #FE0000;
+    color: #fe0000;
   }
 
   .form-inp {
     height: 2.5rem;
-    border-radius: 1.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 1rem;
+    --inp-cl: rgba(255, 255, 255, 0.16);
+    border: 1px solid var(--inp-cl);
     font-size: 16px;
     font-weight: 400;
     color: rgba(255, 255, 255, 0.92);
@@ -410,10 +423,66 @@
   .form-inp::placeholder {
     color: rgba(255, 255, 255, 0.24);
   }
+  .form-inp:valid{
+    --inp-cl: var(--ready-color);
+  }
 
+  /* Estilos del checkbox */
   .check-cont {
-    border: 1px solid red;
+    display: flex;
     margin-top: 1rem;
+  }
+
+  .check-cont div:nth-child(1) {
+    display: flex;
+    margin-right: 0.5rem;
+  }
+  .check-input {
+    height: 0;
+    width: 0;
+    visibility: hidden;
+  }
+
+  .check-label {
+    cursor: pointer;
+    text-indent: -9999px;
+    width: 42px;
+    height: 24px;
+    display: block;
+    border-radius: 1rem;
+    position: relative;
+    --act-color: rgba(255, 255, 255, 0.24);
+    border: 1px solid var(--act-color);
+    overflow: hidden;
+  }
+  .check-label:after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    background: var(--act-color);
+    border-radius: 50%;
+    transition: 0.2s ease;
+  }
+
+  .check-input:checked + .check-label {
+    --act-color: var(--ready-color);
+  }
+  .check-input:checked + .check-label:after {
+    left: calc(100% - 2px);
+    transform: translateX(-100%);
+  }
+
+  .check-txt {
+    font-weight: 400;
+    font-size: 15px;
+    color: rgba(245, 245, 245, 0.60);
+  }
+  .check-txt span {
+    font-weight: 500;
+    color: rgba(245, 245, 245, 0.80);
   }
 
   /* Estilos de circulos guia */
@@ -474,17 +543,29 @@
   }
 
   .btn-accept {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
     color: black;
-    background-color: white; /* Cambia el color según tu preferencia */
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
-    margin: 0 5px;
+    background-color: var(--color-main);
+    border: 1rem;
+    border-radius: 1rem;
     cursor: pointer;
   }
 
   .btn-accept-des {
-    opacity: 0.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.24);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    border-radius: 1rem;
     cursor: not-allowed;
   }
 </style>
