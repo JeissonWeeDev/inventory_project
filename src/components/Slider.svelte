@@ -1,15 +1,18 @@
 <script>
+  import CryptoJS from "crypto-js";
+  import { openDB } from "idb";
+
   // Recursos
   import tagStep1 from "$lib/assets/tagUpStep1.svg";
   import iconCookies from "$lib/assets/icon_cookies.svg";
+  1;
 
-  let currentStep = 3;
+  let currentStep = 1;
   const totalSteps = 3;
 
   /* Variables para la referencia de altura, esto es para que cada paso tenga la altura del contendio automaticamente (Es un problema de diseño) */
   let stepRef1, stepRef2, stepRef3;
-
-  let acceptButtonEnabled = true;
+  let acceptButtonEnabled;
 
   let formData = {
     username: "",
@@ -41,6 +44,132 @@
     };
     acceptButtonEnabled =
       formData.username.trim() !== "" && formData.email.trim() !== "";
+  };
+
+  const secretKey = "clave-secreta"; // Puedes generar una clave única para cada usuario
+
+  const encryptField = (field) => {
+    const fieldString = JSON.stringify(field);
+    const encryptedField = CryptoJS.AES.encrypt(
+      fieldString,
+      secretKey
+    ).toString();
+    return encryptedField;
+  };
+
+  const saveToIndexedDB = async () => {
+    console.log("Datos antes del cifrado:", formData);
+
+    const encryptedUsername = encryptField(formData.username);
+    const encryptedEmail = encryptField(formData.email);
+    const encryptedAcceptTerms = encryptField(formData.acceptTerms);
+
+    console.log("Datos cifrados (Nombre de Usuario):", encryptedUsername);
+    console.log("Datos cifrados (Correo Electrónico):", encryptedEmail);
+    console.log("Datos cifrados (Accept Terms):", encryptedAcceptTerms);
+
+    const db = await openDB("userDataDB", 1, {
+      upgrade(db) {
+        db.createObjectStore("userDataStore");
+      },
+    });
+
+    const tx = db.transaction("userDataStore", "readwrite");
+    const userDataStore = tx.objectStore("userDataStore");
+    userDataStore.put(encryptedUsername, "username");
+    userDataStore.put(encryptedEmail, "email");
+    userDataStore.put(encryptedAcceptTerms, "acceptTerms");
+
+    await tx.done;
+
+    console.log("Información guardada exitosamente en IndexedDB.");
+
+    // Llamada a la función de consulta después del guardado
+    retrieveFromIndexedDB();
+  };
+
+  const retrieveFromIndexedDB = async () => {
+    const db = await openDB("userDataDB", 1);
+    const tx = db.transaction("userDataStore", "readonly");
+    const userDataStore = tx.objectStore("userDataStore");
+
+    const encryptedUsername = await userDataStore.get("username");
+    const encryptedEmail = await userDataStore.get("email");
+    const encryptedAcceptTerms = await userDataStore.get("acceptTerms");
+
+    if (encryptedUsername) {
+      const decryptedUsernameBytes = CryptoJS.AES.decrypt(
+        encryptedUsername,
+        secretKey
+      );
+      const decryptedUsername = JSON.parse(
+        decryptedUsernameBytes.toString(CryptoJS.enc.Utf8)
+      );
+
+      console.log("Nombre de Usuario desencriptado:", decryptedUsername);
+    } else {
+      console.error(
+        "No se encontró el nombre de usuario cifrado en IndexedDB."
+      );
+    }
+
+    if (encryptedEmail) {
+      const decryptedEmailBytes = CryptoJS.AES.decrypt(
+        encryptedEmail,
+        secretKey
+      );
+      const decryptedEmail = JSON.parse(
+        decryptedEmailBytes.toString(CryptoJS.enc.Utf8)
+      );
+
+      console.log("Correo Electrónico desencriptado:", decryptedEmail);
+    } else {
+      console.error(
+        "No se encontró el correo electrónico cifrado en IndexedDB."
+      );
+    }
+
+    if (encryptedAcceptTerms) {
+      const decryptedAcceptTermsBytes = CryptoJS.AES.decrypt(
+        encryptedAcceptTerms,
+        secretKey
+      );
+      const decryptedAcceptTerms = JSON.parse(
+        decryptedAcceptTermsBytes.toString(CryptoJS.enc.Utf8)
+      );
+
+      console.log("Accept Terms desencriptado:", decryptedAcceptTerms);
+    } else {
+      console.error(
+        "No se encontró el valor Accept Terms cifrado en IndexedDB."
+      );
+    }
+  };
+
+  const handleClickForm = () => {
+    if (
+      isNonEmptyString(formData.username) &&
+      isNonEmptyString(formData.email)
+    ) {
+      if (isValidEmail(formData.email)) {
+        saveToIndexedDB(); // Cambié la función de guardado
+        console.log("Información validada y guardada con éxito.");
+      } else {
+        console.error("El formato del correo electrónico no es válido.");
+      }
+    } else {
+      console.error(
+        "Por favor, ingrese un nombre de usuario y un correo electrónico válidos."
+      );
+    }
+  };
+
+  const isNonEmptyString = (value) =>
+    typeof value === "string" && value.trim() !== "";
+
+  const isValidEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email.trim());
   };
 </script>
 
@@ -254,6 +383,10 @@
             errores)
           </p>
         </div>
+
+        <div class="cont-help">
+          <p>¿Necesitas ayuda? <a href="/ayuda">Ayuda y soporte</a></p>
+        </div>
       </form>
     </div>
   </div>
@@ -276,12 +409,12 @@
       >
     {:else}
       <button
-        on:click={nextStep}
+        on:click={handleClickForm}
         disabled={!acceptButtonEnabled}
         class:btn-accept-des={!acceptButtonEnabled}
         class:btn-accept={acceptButtonEnabled}
       >
-        Aceptar
+        Guardar
       </button>
     {/if}
   </div>
@@ -296,7 +429,7 @@
     display: flex;
     width: auto;
     margin-bottom: 1.5rem;
-    transition: all 0.25s ease;
+    transition: height 0.2s ease;
   }
 
   .step-content {
@@ -304,7 +437,8 @@
     width: 100%;
     height: max-content;
     padding: 0 0.5rem;
-    transition: opacity 0.2s ease;
+    transition: all 0.2s ease;
+    overflow-y: hidden;
     z-index: 11;
   }
 
@@ -423,7 +557,10 @@
   .form-inp::placeholder {
     color: rgba(255, 255, 255, 0.24);
   }
-  .form-inp:valid{
+  .form-inp:focus {
+    --inp-cl: rgba(255, 255, 255, 0.32);
+  }
+  .form-inp:valid {
     --inp-cl: var(--ready-color);
   }
 
@@ -432,7 +569,6 @@
     display: flex;
     margin-top: 1rem;
   }
-
   .check-cont div:nth-child(1) {
     display: flex;
     margin-right: 0.5rem;
@@ -454,6 +590,9 @@
     --act-color: rgba(255, 255, 255, 0.24);
     border: 1px solid var(--act-color);
     overflow: hidden;
+  }
+  .check-label:hover {
+    --act-color: rgba(255, 255, 255, 0.32);
   }
   .check-label:after {
     content: "";
@@ -478,11 +617,26 @@
   .check-txt {
     font-weight: 400;
     font-size: 15px;
-    color: rgba(245, 245, 245, 0.60);
+    color: rgba(245, 245, 245, 0.6);
   }
   .check-txt span {
     font-weight: 500;
-    color: rgba(245, 245, 245, 0.80);
+    color: rgba(245, 245, 245, 0.8);
+  }
+
+  .cont-help {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+    width: auto;
+  }
+  .cont-help p {
+    font-size: 15px;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .cont-help p a {
+    color: var(--color-main);
   }
 
   /* Estilos de circulos guia */

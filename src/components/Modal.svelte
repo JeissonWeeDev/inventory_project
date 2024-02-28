@@ -5,7 +5,7 @@
   export let modalContent;
 
   // Configuracion para el modal
-  let { userClose } = modalContent.modalConfig;
+  let { userClose, maxWidth } = modalContent.modalConfig;
 
   // Componente de entrada
   let { component } = modalContent.modalCont;
@@ -17,7 +17,7 @@
 </script>
 
 <!-- Modal card -->
-<div class="modal-body">
+<div class="modal-body" style={`max-width: ${maxWidth};`}>
   <header class="modal-header-cont">
     <span class="lg-icon">
       <svg
@@ -194,7 +194,7 @@
     bottom: 0;
     margin: auto;
     width: 100%;
-    max-width: 45rem;
+    max-width: auto;
     height: max-content;
     min-height: 4.5rem;
     background-color: hsl(212, 24%, 8%);
@@ -235,7 +235,7 @@
     align-items: center;
     width: 2.5rem;
     height: 2.5rem;
-    background-color: #23262B;
+    background-color: #23262b;
     border-radius: 20px;
     --cl-hover: #8397af;
   }
@@ -248,5 +248,16 @@
   }
   .btn-close svg path {
     fill: var(--cl-hover);
+  }
+
+  /* ---- Configuracion de responsive ---- */
+  @media (min-width: 600px) {
+    .modal-body {
+      margin: 0;
+      border-radius: 1.5rem;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
   }
 </style>

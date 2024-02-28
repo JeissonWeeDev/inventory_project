@@ -21,6 +21,7 @@
     showModal({
       modalConfig: {
         userClose: false,
+        maxWidth: "600px",
       },
       modalCont: {
         component: Slider,
