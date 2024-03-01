@@ -158,7 +158,6 @@
   </header>
 
   <!-- Cuerpo del contenido del modal -->
-  <!-- {modalContent.message} -->
   <main class="modal-main-cont">
     <svelte:component this={component} />
   </main>
@@ -219,6 +218,7 @@
     z-index: 12;
   }
 
+  /* Logo flotante Lion Team Org */
   .lg-icon {
     width: 2.5rem;
     height: 2.5rem;
@@ -228,6 +228,7 @@
     height: inherit;
   }
 
+  /* Boton close */
   .btn-close {
     cursor: pointer;
     display: flex;

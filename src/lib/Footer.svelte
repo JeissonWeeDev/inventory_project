@@ -1,5 +1,5 @@
 <footer class="foo_page">
-  <p>© Copyright 2023 Jeisson León - Moralba Co,.</p>
+  <p>© Copyright 2023 Jeisson León and Lion Team Org - Moralba Co,.</p>
 </footer>
 
 <style>
@@ -16,6 +16,6 @@
     text-align: center;
     font-size: 13px;
     font-weight: 300;
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--color-contrast-500-t);
   }
 </style>
