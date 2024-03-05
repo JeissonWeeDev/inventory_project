@@ -159,7 +159,7 @@
 
   <!-- Cuerpo del contenido del modal -->
   <main class="modal-main-cont">
-    <svelte:component this={component} />
+    <svelte:component this={component} {closeModal} />
   </main>
 </div>
 
@@ -200,7 +200,19 @@
     border-radius: 1.5rem 1.5rem 0 0;
     padding: 2rem 0 0 0;
     overflow: hidden;
+    animation: desanimation .25s ease forwards;
+
     z-index: 11;
+  }
+  @keyframes desanimation {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0px);
+    }
   }
 
   /* Header de modal */
@@ -258,7 +270,7 @@
       border-radius: 1.5rem;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) !important;
     }
   }
 </style>

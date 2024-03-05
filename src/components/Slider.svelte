@@ -1,18 +1,23 @@
 <script>
   import CryptoJS from "crypto-js";
   import { openDB } from "idb";
+  import LoadingIcon from "./icons/LoadingIcon.svelte";
+  import ReadyIson from "./icons/ReadyIson.svelte";
 
-  // Recursos
+  // Recursos ---------
   import tagStep1 from "$lib/assets/tagUpStep1.svg";
   import iconCookies from "$lib/assets/icon_cookies.svg";
-  1;
 
+  // Valores de entrada ---------
+  export let closeModal;
+
+  // Informacion de los slider y sus pasos ---------
   let currentStep = 1;
   const totalSteps = 3;
 
   /* Variables para la referencia de altura, esto es para que cada paso tenga la altura del contendio automaticamente (Es un problema de diseño) */
   let stepRef1, stepRef2, stepRef3;
-  let acceptButtonEnabled;
+  let acceptButtonEnabled; // Estado del boton de guardado en registro
 
   /* Estructura para el registro de datos de usuario */
   let formData = {
@@ -21,8 +26,12 @@
     acceptContri: false,
   };
 
-  /* Variable para mostrar o no el contenedor del slider */
-  let savingDataState = false;
+  /* Estados de guardado de datos */
+  let savingDataState = {
+    savingProcess: false,
+    loadingState: false,
+    readyProcess: false,
+  };
 
   const nextStep = () => {
     if (currentStep < totalSteps) {
@@ -62,15 +71,9 @@
   };
 
   const saveToIndexedDB = async () => {
-    console.log("Datos antes del cifrado:", formData);
-
     const encryptedUsername = encryptField(formData.username);
     const encryptedEmail = encryptField(formData.email);
     const encryptedAcceptContri = encryptField(formData.acceptContri);
-
-    console.log("Datos cifrados (Nombre de Usuario):", encryptedUsername);
-    console.log("Datos cifrados (Correo Electrónico):", encryptedEmail);
-    console.log("Datos cifrados (Accept Terms):", encryptedAcceptContri);
 
     const db = await openDB("userDataDB", 1, {
       upgrade(db) {
@@ -85,8 +88,6 @@
     userDataStore.put(encryptedAcceptContri, "acceptContri");
 
     await tx.done;
-
-    console.log("Información guardada exitosamente en IndexedDB.");
 
     // Llamada a la función de consulta después del guardado
     retrieveFromIndexedDB();
@@ -151,9 +152,7 @@
     }
   };
 
-  const handleClickForm = () => {
-    console.clear();
-
+  const handleClickForm = async () => {
     const isUsernameValid = isNonEmptyString(formData.username);
     const isEmailValid =
       isNonEmptyString(formData.email) && isValidEmail(formData.email);
@@ -164,23 +163,34 @@
       );
       return;
     }
-
     if (!isUsernameValid) {
       console.error("Por favor, ingrese un nombre de usuario válido.");
       return;
     }
-
     if (!isEmailValid) {
       console.error("El formato del correo electrónico no es válido.");
       return;
     }
 
-    saveToIndexedDB();
-    console.log("Información validada y guardada con éxito.");
+    try {
+      savingDataState.savingProcess = true;
+      savingDataState.loadingState = true;
+      
+      await saveToIndexedDB();
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      savingDataState.loadingState = false
+      savingDataState.readyProcess = true;
+
+      await new Promise(resolve => setTimeout(resolve, 600));
+      closeModal();
+    } catch {
+      savingDataState.savingProcess = false;
+      console.error("Error al guardar datos");
+    }
   };
 
-  const isNonEmptyString = (value) =>
-    typeof value === "string" && value.trim() !== "";
+  const isNonEmptyString = (value) => typeof value === "string" && value.trim() !== "";
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -189,7 +199,7 @@
 </script>
 
 <div class="container">
-  {#if !savingDataState}
+  {#if !savingDataState.savingProcess}
     <div
       class="steps-container"
       style={`
@@ -437,8 +447,13 @@
       {/if}
     </div>
   {:else}
-    <div>
-      Guardando datos...
+    <div class="cont-process">
+      {#if savingDataState.loadingState}
+        <LoadingIcon width={40} height={40} timeAnimation={"0.3s"} />
+      {/if}
+      {#if savingDataState.readyProcess}
+        <ReadyIson width={40} height={40}/>
+      {/if}
     </div>
   {/if}
 </div>
@@ -580,6 +595,9 @@
   }
   .form-inp::placeholder {
     color: rgba(255, 255, 255, 0.24);
+  }
+  .form-inp:hover {
+    --inp-cl: rgba(255, 255, 255, 0.32);
   }
   .form-inp:focus {
     --inp-cl: rgba(255, 255, 255, 0.32);
@@ -742,5 +760,14 @@
     border: 1px solid rgba(255, 255, 255, 0.24);
     border-radius: 1rem;
     cursor: not-allowed;
+  }
+
+  /* Contenedor de proceso de guardado */
+  .cont-process {
+    display: flex;
+    justify-content: center;
+    height: max-content;
+    padding: 2rem 0;
+    margin: 0 0 2rem 0;
   }
 </style>
