@@ -8,6 +8,4 @@
 </section>
 
 <style>
-  .sec_home {
-  }
 </style>

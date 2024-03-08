@@ -1,6 +1,7 @@
 <script>
   import CryptoJS from "crypto-js";
   import { openDB } from "idb";
+  import LogoIcon from "./icons/LogoIcon.svelte";
   import LoadingIcon from "./icons/LoadingIcon.svelte";
   import ReadyIson from "./icons/ReadyIson.svelte";
 
@@ -220,7 +221,7 @@
         style={`opacity: ${currentStep === 1 ? 1 : 0}`}
       >
         <img src={tagStep1} alt="Simplifica tu flujo de inventario" />
-        <h2>Bienvenido a FlowStock: Simplificando la Gestión de Inventarios</h2>
+        <h2>Bienvenido a FlowStock: Simplificando tu inventario</h2>
         <p class="tx_normal">
           ¡Bienvenido a FlowStock! Tu solución intuitiva para simplificar y
           optimizar tu flujo de trabajo de inventario. Estamos emocionados de
@@ -236,127 +237,13 @@
         <img src={iconCookies} alt="Icon Cookies" />
         <h2>Aviso de Cookies y Datos Locales</h2>
         <p class="tx_normal">
-          Al continuar navegando, aceptas nuestra <a href="/politica"
-            >Política de Uso</a
-          >
+          Al continuar navegando, aceptas nuestra <a href="/politica">Política de Uso</a>
           y <a href="/privacidad">Política de Privacidad</a>, las cuales
           explican cómo recopilamos, utilizamos y salvaguardamos tus datos.
         </p>
-        <svg
-          width="32"
-          height="32"
-          viewBox="0 0 40 40"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          ><rect
-            x=".5"
-            y=".5"
-            width="39"
-            height="39"
-            rx="19.5"
-            stroke="#999"
-          /><mask
-            id="a"
-            style="mask-type:luminance"
-            maskUnits="userSpaceOnUse"
-            x="10"
-            y="10"
-            width="20"
-            height="20"><path d="M30 10H10v20h20V10Z" fill="#fff" /></mask
-          ><g mask="url(#a)"
-            ><mask
-              id="b"
-              style="mask-type:alpha"
-              maskUnits="userSpaceOnUse"
-              x="4"
-              y="14"
-              width="19"
-              height="18"
-              ><path
-                d="M16.653 31.015 4.926 22.892l6.13-8.85 11.727 8.123-6.13 8.85Z"
-                fill="#fff"
-              /></mask
-            ><g mask="url(#b)"
-              ><mask
-                id="c"
-                style="mask-type:alpha"
-                maskUnits="userSpaceOnUse"
-                x="4"
-                y="14"
-                width="19"
-                height="18"
-                ><path
-                  d="M16.653 31.015 4.926 22.892l6.13-8.85 11.727 8.123-6.13 8.85Z"
-                  fill="#fff"
-                /></mask
-              ><g mask="url(#c)"
-                ><mask
-                  id="d"
-                  style="mask-type:alpha"
-                  maskUnits="userSpaceOnUse"
-                  x="10"
-                  y="14"
-                  width="13"
-                  height="14"
-                  ><path
-                    d="m12.081 14.752 9.677 6.703a1.248 1.248 0 0 1-.278 2.196l-9.442 3.453c-.431.151-.9.09-1.27-.165a1.381 1.381 0 0 1-.594-1.126l-.05-10.029c-.002-.468.254-.89.662-1.11a1.256 1.256 0 0 1 1.295.078Z"
-                    fill="#fff"
-                  /></mask
-                ><g mask="url(#d)"
-                  ><path
-                    d="m18.38 32.975 9.952-14.367-14.248-9.869-9.952 14.367 14.248 9.87Z"
-                    fill="#999"
-                  /></g
-                ></g
-              ></g
-            ><mask
-              id="e"
-              style="mask-type:alpha"
-              maskUnits="userSpaceOnUse"
-              x="17"
-              y="8"
-              width="19"
-              height="18"
-              ><path
-                d="m23.346 8.985 11.728 8.123-6.13 8.85-11.728-8.124 6.13-8.85Z"
-                fill="#fff"
-              /></mask
-            ><g mask="url(#e)"
-              ><mask
-                id="f"
-                style="mask-type:alpha"
-                maskUnits="userSpaceOnUse"
-                x="17"
-                y="8"
-                width="19"
-                height="18"
-                ><path
-                  d="m23.346 8.985 11.728 8.123-6.13 8.85-11.728-8.124 6.13-8.85Z"
-                  fill="#fff"
-                /></mask
-              ><g mask="url(#f)"
-                ><mask
-                  id="g"
-                  style="mask-type:alpha"
-                  maskUnits="userSpaceOnUse"
-                  x="17"
-                  y="12"
-                  width="13"
-                  height="14"
-                  ><path
-                    d="m27.919 25.248-9.677-6.703a1.248 1.248 0 0 1 .278-2.196l9.442-3.453c.43-.151.9-.09 1.27.165.368.256.59.674.594 1.126l.05 10.028c.002.469-.255.89-.662 1.11a1.256 1.256 0 0 1-1.295-.077Zm.652-11.234a.222.222 0 0 0-.202-.026l-9.442 3.454c-.01.001-.049.019-.06.073a.08.08 0 0 0 .037.087l9.677 6.703c.012.008.041.029.094.004.053-.026.045-.066.048-.082L28.66 14.19a.211.211 0 0 0-.089-.176Z"
-                    fill="#fff"
-                  /></mask
-                ><g mask="url(#g)"
-                  ><path
-                    d="m21.62 7.024-9.952 14.368 14.248 9.869 9.952-14.367-14.248-9.87Z"
-                    fill="#999"
-                  /></g
-                ></g
-              ></g
-            ></g
-          ></svg
-        >
+        <span class="step2-cont-lg-icon">
+          <LogoIcon colorPrin='#fff' colorSec='#999' />
+        </span>
       </div>
       <div
         class={`step-content step3`}
@@ -545,9 +432,10 @@
     -webkit-text-fill-color: transparent;
     margin-bottom: 1rem;
   }
-  .step2 svg {
+  .step2-cont-lg-icon {
+    display: flex;
+    justify-content: center;
     width: 100%;
-    height: 2rem;
     margin-top: 1rem;
   }
 
