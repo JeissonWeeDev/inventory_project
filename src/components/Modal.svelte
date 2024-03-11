@@ -182,11 +182,12 @@
     width: 100%;
     height: 100svh;
     overflow: hidden;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.72);
     z-index: 10;
   }
 
   .modal-body {
+    opacity: 0;
     position: absolute;
     left: 0;
     right: 0;
